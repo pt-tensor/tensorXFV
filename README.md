@@ -44,9 +44,12 @@ How to Update Boundary Conditions:
 #4. Pressure and turbulence BCs are in 0.orig/p, 0.orig/k, 0.orig/omega, and 0.orig/nut. Keep wall functions on truck_bodyGroup and lowerWall unless you change the near-wall treatment.
 #5. If you change speed or vehicle size, also update system/forceCoeffs (magUInf, lRef, Aref, CofR) so force coefficients stay consistent.
 
+Validation Study:
+[1] https://en.pt-tensor.com/ahmed-bluff-body-openfoam-validation-study-mesh-and-reynolds-number-sensitivity-studies/
+
 Documentation:
 1st release: October 24th, 2024 = basic external flow and snappyHexMesh
 Update 1: February 20th, 2025 = Change to openfoam 2406 version, add some script files
 Update 2: March 1st, 2025 = Create a new branch from TensorXF to TensorXFV which dedicated for ground vehicle aerodynamics
 Update 3: September 1st, 2026 = tensorXFV 2026, update branding to pt-tensor.com, add geometry and boundary-condition instructions
-Update 4: September 29th, 2026 = Replace template geometry with truck_layout object.stl; Y-up domain; truck_body wall group; Allrun/Allclean scripts
+Update 4: September 29th, 2026 = Update mesh and computational schemes with validated Ahmed Body benchmark case
