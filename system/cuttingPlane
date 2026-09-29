@@ -1,0 +1,43 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+cuttingPlane
+{
+    type            surfaces;
+    libs            (sampling);
+    writeControl    writeTime;
+
+    surfaceFormat   vtk;
+    fields          ( p U );
+
+    interpolationScheme cellPoint;
+
+    surfaces
+    {
+        // Symmetry / mid-plane (STL spanwise = Z)
+        zNormal
+        {
+            type        cuttingPlane;
+            point       (3.5 1.0 0);
+            normal      (0 0 1);
+            interpolate true;
+        }
+
+        // Horizontal plane through cab mid-height
+        yNormal
+        {
+            type        cuttingPlane;
+            point       (3.5 1.0 0);
+            normal      (0 1 0);
+            interpolate true;
+        }
+    }
+}
+
+
+// ************************************************************************* //

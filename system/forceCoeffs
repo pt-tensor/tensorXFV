@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+forceCoeffs1
+{
+    type            forceCoeffs;
+
+    libs            (forces);
+
+    writeControl    timeStep;
+    timeInterval    1;
+
+    log             yes;
+
+    patches         (truck_bodyGroup);
+    rho             rhoInf;      // Indicates incompressible
+    rhoInf          1;           // Required when rho = rhoInf
+
+    // STL is Y-up: lift = +Y, drag = +X
+    liftDir         (0 1 0);
+    dragDir         (1 0 0);
+    CofR            (3.507 0 0); // geometric centre on ground plane
+    pitchAxis       (0 0 1);
+
+    magUInf         40;
+    lRef            7.079;       // overall length [m]
+    Aref            3.26;        // projected frontal area on YZ [m^2]
+}
+
+
+// ************************************************************************* //

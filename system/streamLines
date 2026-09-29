@@ -1,0 +1,41 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+streamLines
+{
+    type    streamLine;
+    libs    (fieldFunctionObjects);
+
+    writeControl    writeTime;
+
+    setFormat   vtk;
+
+    direction   forward;
+
+    fields      (p U k);
+
+    lifeTime    10000;
+
+    nSubCycle   5;
+
+    cloud       particleTracks;
+
+    seedSampleSet
+    {
+        type        uniform;
+        axis        y;
+
+        // Vertical rake upstream of the nose, slightly off mid-plane
+        start       (-5.001 0.15 0.0011);
+        end         (-5.001 2.50 0.0011);
+        nPoints     25;
+    }
+}
+
+
+// ************************************************************************* //

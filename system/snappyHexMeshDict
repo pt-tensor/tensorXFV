@@ -1,0 +1,192 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Mesh for constant/triSurface/object.stl (truck_layout)
+// STL axes: X streamwise, Y vertical (ground ~0), Z spanwise (centred)
+// Target: practical ~2–5 M cell external-aero mesh
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+
+geometry
+{
+    object.stl
+    {
+        type triSurfaceMesh;
+        name truck_body;
+    }
+
+    // Far envelope (body + near wake)
+    refinementBox_1
+    {
+        type box;
+        min (-2.0  0.0  -2.5);
+        max ( 18.0 4.0   2.5);
+    }
+
+    // Near-body envelope
+    refinementBox_2
+    {
+        type box;
+        min (-1.0  0.0  -1.6);
+        max ( 11.0 3.0   1.6);
+    }
+
+    // Tight body box
+    refinementBox_3
+    {
+        type box;
+        min (-0.3  0.0  -1.2);
+        max (  8.5 2.4   1.2);
+    }
+}
+
+
+castellatedMeshControls
+{
+    maxLocalCells 2000000;
+    maxGlobalCells 8000000;
+    minRefinementCells 10;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+        {
+            file "object.eMesh";
+            level 5;
+        }
+    );
+
+    refinementSurfaces
+    {
+        truck_body
+        {
+            level (4 5);
+            patchInfo
+            {
+                type wall;
+                inGroups (truck_bodyGroup);
+            }
+        }
+    }
+
+    refinementRegions
+    {
+        truck_body
+        {
+            mode distance;
+            levels ((0.08 5) (0.35 4));
+        }
+
+        refinementBox_1
+        {
+            mode inside;
+            levels ((1E15 2));
+        }
+
+        refinementBox_2
+        {
+            mode inside;
+            levels ((1E15 3));
+        }
+
+        refinementBox_3
+        {
+            mode inside;
+            levels ((1E15 4));
+        }
+    }
+
+    resolveFeatureAngle 30;
+
+    // Upstream of the nose, clear of the solid
+    locationInMesh (-2.001 1.001 0.001);
+
+    allowFreeStandingZoneFaces true;
+}
+
+
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 2.0;
+    nSolveIter 30;
+    nRelaxIter 5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap false;
+}
+
+
+addLayersControls
+{
+    relativeSizes true;
+
+    layers
+    {
+        lowerWall
+        {
+            nSurfaceLayers 3;
+        }
+
+        truck_body
+        {
+            nSurfaceLayers 5;
+        }
+    }
+
+    expansionRatio 1.2;
+    firstLayerThickness 0.05;
+    minThickness 0.03;
+    nGrow 0;
+    featureAngle 60;
+    slipFeatureAngle 30;
+    nRelaxIter 3;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals 3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 50;
+}
+
+
+meshQualityControls
+{
+    #include "meshQualityDict"
+
+    nSmoothScale 4;
+    errorReduction 0.75;
+}
+
+
+writeFlags
+(
+    scalarLevels
+    layerSets
+    layerFields
+);
+
+
+mergeTolerance 1e-6;
+
+
+// ************************************************************************* //

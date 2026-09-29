@@ -1,0 +1,90 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// Domain sized for object.stl (truck_layout):
+//   X streamwise ~7.08 m, Y vertical ~2.03 m (ground at y~0), Z span ~1.91 m
+// Wind-tunnel style box: ~2L upstream, ~4L wake, ~6H height, ~3W half-width.
+
+convertToMeters 1;
+
+vertices
+(
+    (-14 -0.001 -6)   // 0
+    ( 35 -0.001 -6)   // 1
+    ( 35  12    -6)   // 2
+    (-14  12    -6)   // 3
+    (-14 -0.001  6)   // 4
+    ( 35 -0.001  6)   // 5
+    ( 35  12     6)   // 6
+    (-14  12     6)   // 7
+);
+
+blocks
+(
+    // ~0.7 m base cells before snappy refinement
+    hex (0 1 2 3 4 5 6 7) (70 18 18) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    frontAndBack
+    {
+        type patch;
+        faces
+        (
+            (0 3 2 1)   // z = zmin
+            (4 5 6 7)   // z = zmax
+        );
+    }
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+    lowerWall
+    {
+        type wall;
+        faces
+        (
+            (0 1 5 4)   // y = ymin (ground)
+        );
+    }
+    upperWall
+    {
+        type patch;
+        faces
+        (
+            (3 7 6 2)   // y = ymax
+        );
+    }
+);
+
+
+// ************************************************************************* //
